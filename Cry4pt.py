@@ -1,13 +1,10 @@
+import json, sys, re, os
 from PySide6.QtWidgets import (QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem,
                                QMenu, QInputDialog, QMessageBox, QMenuBar, QLineEdit,
                                QWidget, QVBoxLayout, QTabWidget, QTextEdit, QPushButton,
                                QStatusBar)
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QIcon, QFont, QSyntaxHighlighter, QColor
-import json
-import sys
-import re
-import os
 from collections import defaultdict
 
 # JSON Syntax Highlighter
