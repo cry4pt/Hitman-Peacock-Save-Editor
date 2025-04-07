@@ -38,16 +38,22 @@ class JsonEditor(QMainWindow):
         exit_action.triggered.connect(self.close)
 
         edit_menu = menubar.addMenu("Edit")
+
         set_challenge_progression_action = edit_menu.addAction("Set All Ticked & Completed in ChallengeProgression")
         set_challenge_progression_action.triggered.connect(self.set_all_challenge_progresion)
+
         set_levels_action = edit_menu.addAction("Set All Levels in Locations")
         set_levels_action.triggered.connect(self.set_all_location_levels)
+
         copy_locations_action = edit_menu.addAction("Copy Locations to Sublocations")
         copy_locations_action.triggered.connect(self.copy_locations_to_sublocations)
+
         set_sublocations_xp_action = edit_menu.addAction("Set All XP and ActionXp in Sublocations")
         set_sublocations_xp_action.triggered.connect(self.set_all_sublocations_xp)
+
         copy_peacock_action = edit_menu.addAction("Copy Peacock Escalations to Played Contracts")
         copy_peacock_action.triggered.connect(self.copy_peacock_escalations_to_played_contracts)
+
         copy_completed_action = edit_menu.addAction("Copy Peacock Escalations to Completed Escalations")
         copy_completed_action.triggered.connect(self.copy_peacock_escalations_to_completed_escalations)
 
