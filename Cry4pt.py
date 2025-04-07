@@ -3,12 +3,20 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QTreeWidget, QTreeWidg
 from PySide6.QtCore import Qt
 import json
 import sys
+import re
+import os
 
 class JsonEditor(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("JSON Editor")
         self.resize(800, 600)
+
+        # Find the JSON file path automatically
+        self.json_file_path = self.find_peacock_user_json()
+        if not self.json_file_path:
+            QMessageBox.critical(self, "Error", "Could not find the user JSON file.")
+            sys.exit(1)
 
         # Set up the tree widget
         self.tree = QTreeWidget()
@@ -19,7 +27,6 @@ class JsonEditor(QMainWindow):
         self.setCentralWidget(self.tree)
 
         # Initialize JSON data
-        self.json_file_path = r"C:\Users\Death\Desktop\Peacock-v7.7.0\userdata\users\04a21aa3-d7f7-4a42-92b5-6630b4e634a0.json"
         self.json_data = None
         self.load_json()
         self.populate_tree()
@@ -56,6 +63,49 @@ class JsonEditor(QMainWindow):
 
         copy_completed_action = edit_menu.addAction("Copy Peacock Escalations to Completed Escalations")
         copy_completed_action.triggered.connect(self.copy_peacock_escalations_to_completed_escalations)
+
+    def find_peacock_user_json(self):
+        home_dir = os.path.expanduser('~')
+        uuid_pattern = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.json$', re.IGNORECASE)
+        
+        # Check common directories first for efficiency
+        common_dirs = [
+            os.path.join(home_dir, 'Desktop'),
+            os.path.join(home_dir, 'Documents'),
+            os.path.join(home_dir, 'Downloads'),
+            home_dir
+        ]
+        
+        for common_dir in common_dirs:
+            if not os.path.isdir(common_dir):
+                continue
+            for root, dirs, files in os.walk(common_dir, topdown=True):
+                # Modify dirs in-place to skip hidden directories
+                dirs[:] = [d for d in dirs if not d.startswith('.')]
+                for dir_name in dirs:
+                    if dir_name.lower().startswith('peacock'):
+                        peacock_path = os.path.join(root, dir_name)
+                        users_dir = os.path.join(peacock_path, 'userdata', 'users')
+                        if os.path.isdir(users_dir):
+                            for entry in os.listdir(users_dir):
+                                entry_path = os.path.join(users_dir, entry)
+                                if os.path.isfile(entry_path) and uuid_pattern.match(entry):
+                                    return entry_path
+        
+        # If not found in common directories, search the entire home directory
+        for root, dirs, files in os.walk(home_dir, topdown=True):
+            # Skip hidden directories
+            dirs[:] = [d for d in dirs if not d.startswith('.')]
+            for dir_name in dirs:
+                if dir_name.lower().startswith('peacock'):
+                    peacock_path = os.path.join(root, dir_name)
+                    users_dir = os.path.join(peacock_path, 'userdata', 'users')
+                    if os.path.isdir(users_dir):
+                        for entry in os.listdir(users_dir):
+                            entry_path = os.path.join(users_dir, entry)
+                            if os.path.isfile(entry_path) and uuid_pattern.match(entry):
+                                return entry_path
+        return None
 
     def load_json(self):
         try:
