@@ -36,7 +36,7 @@ class JsonEditor(QMainWindow):
         self.setWindowTitle("Advanced JSON Editor")
         self.resize(1000, 700)
 
-        # Find and load JSON file
+# Find and load JSON file
         self.json_file_path = self.find_peacock_user_json()
         if not self.json_file_path:
             QMessageBox.critical(self, "Error", "No JSON file found.")
@@ -135,6 +135,7 @@ class JsonEditor(QMainWindow):
     ### File and JSON Handling
     def find_peacock_user_json(self):
         home_dir = os.path.expanduser('~')
+        print(f"Searching for Peacock user JSON in home directory: {home_dir}")
         uuid_pattern = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.json$', re.IGNORECASE)
         common_dirs = [
             os.path.join(home_dir, 'Desktop'),
@@ -144,7 +145,9 @@ class JsonEditor(QMainWindow):
         ]
         for common_dir in common_dirs:
             if not os.path.isdir(common_dir):
+                print(f"Skipping non-existent directory: {common_dir}")
                 continue
+            print(f"Searching in common directory: {common_dir}")
             for root, dirs, files in os.walk(common_dir, topdown=True):
                 dirs[:] = [d for d in dirs if not d.startswith('.')]
                 for dir_name in dirs:
@@ -152,10 +155,13 @@ class JsonEditor(QMainWindow):
                         peacock_path = os.path.join(root, dir_name)
                         users_dir = os.path.join(peacock_path, 'userdata', 'users')
                         if os.path.isdir(users_dir):
+                            print(f"Found Peacock directory: {peacock_path}")
                             for entry in os.listdir(users_dir):
                                 entry_path = os.path.join(users_dir, entry)
                                 if os.path.isfile(entry_path) and uuid_pattern.match(entry):
+                                    print(f"Found matching Peacock user JSON: {entry_path}")
                                     return entry_path
+        print("Searching in home directory for Peacock directories...")
         for root, dirs, files in os.walk(home_dir, topdown=True):
             dirs[:] = [d for d in dirs if not d.startswith('.')]
             for dir_name in dirs:
@@ -163,10 +169,13 @@ class JsonEditor(QMainWindow):
                     peacock_path = os.path.join(root, dir_name)
                     users_dir = os.path.join(peacock_path, 'userdata', 'users')
                     if os.path.isdir(users_dir):
+                        print(f"Found Peacock directory: {peacock_path}")
                         for entry in os.listdir(users_dir):
                             entry_path = os.path.join(users_dir, entry)
                             if os.path.isfile(entry_path) and uuid_pattern.match(entry):
+                                print(f"Found matching Peacock user JSON: {entry_path}")
                                 return entry_path
+        print("No matching Peacock user JSON found.")
         return None
 
     def load_json(self):
