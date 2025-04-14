@@ -1,6 +1,6 @@
 # Peacock Save Editor - Advanced JSON Editor for Hitman
 
-![Editor Preview](preview.png) <!-- Add a screenshot here if available -->
+![Editor Preview](https://github.com/cry4pt/Hitman-Peacock-Save-Editor/blob/main/peackkcawfa.PNG) <!-- Add a screenshot here if available -->
 
 An advanced GUI-based JSON editor specifically designed for modifying Peacock (Hitman fan server) user save files. Provides both tree-based and raw JSON editing with cheat features for common modifications.
 
