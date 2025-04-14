@@ -56,5 +56,5 @@ An advanced GUI-based JSON editor specifically designed for modifying Peacock (H
 ### Steps
 1. Clone repository:
    ```bash
-   git clone https://github.com/yourusername/peacock-save-editor.git
-   cd peacock-save-editor
+   git clone https://github.com/cry4pt/Hitman-Peacock-Save-Editor.git
+   cd Hitman-Peacock-Save-Editor
