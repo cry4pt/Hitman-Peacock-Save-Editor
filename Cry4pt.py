@@ -129,32 +129,36 @@ class JsonEditor(QMainWindow):
         self.setStatusBar(self.status_bar)
 
     ### File and JSON Handling
-    def find_peacock_user_json(self):
-        home_dir = os.path.expanduser('~')
-        search_dirs = [
-            os.path.join(home_dir, 'Games'),
-            os.path.join(home_dir, 'Desktop'),
-            os.path.join(home_dir, 'Documents'),
-            os.path.join(home_dir, 'Downloads'),
-            home_dir
-        ]
-        uuid_pattern = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.json$', re.IGNORECASE)
+        def find_peacock_user_json(self):
+            home_dir = os.path.expanduser('~')
+            search_dirs = [
+                os.path.join(home_dir, 'Games'),
+                os.path.join(home_dir, 'Desktop'),
+                os.path.join(home_dir, 'Documents'),
+                os.path.join(home_dir, 'Downloads'),
+                home_dir
+            ]
+            uuid_pattern = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.json$', re.IGNORECASE)
 
-        for base_dir in search_dirs:
-            if not os.path.isdir(base_dir):
-                continue
-            for root, dirs, files in os.walk(base_dir):
-                for dir_name in dirs:
-                    if dir_name.lower() == "peacock":
-                        users_dir = os.path.join(root, dir_name, "userdata", "users")
-                        if os.path.isdir(users_dir):
-                            for entry in os.listdir(users_dir):
-                                entry_path = os.path.join(users_dir, entry)
-                                if os.path.isfile(entry_path) and uuid_pattern.match(entry):
-                                    print(f"Found Peacock user JSON: {entry_path}")
-                                    return entry_path
-        print("No matching Peacock user JSON found.")
-        return None
+            for base_dir in search_dirs:
+                if not os.path.isdir(base_dir):
+                    continue
+                for root, dirs, files in os.walk(base_dir):
+                    for dir_name in dirs:
+                        if dir_name.lower() == "peacock":
+                            peacock_dir = os.path.join(root, dir_name, "userdata")
+                            if os.path.isdir(peacock_dir):
+                                # Check inside userdata/users first
+                                users_dir = os.path.join(peacock_dir, "users")
+                                for check_dir in [users_dir, peacock_dir]:  # check both
+                                    if os.path.isdir(check_dir):
+                                        for entry in os.listdir(check_dir):
+                                            entry_path = os.path.join(check_dir, entry)
+                                            if os.path.isfile(entry_path) and uuid_pattern.match(entry):
+                                                print(f"Found Peacock user JSON: {entry_path}")
+                                                return entry_path
+            print("No matching Peacock user JSON found.")
+            return None
 
     def load_json(self):
         try:
