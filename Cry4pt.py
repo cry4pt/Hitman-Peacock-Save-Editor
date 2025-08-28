@@ -138,6 +138,7 @@ class JsonEditor(QMainWindow):
             os.path.join(home_dir, 'Desktop'),
             os.path.join(home_dir, 'Documents'),
             os.path.join(home_dir, 'Downloads'),
+            os.path.join(home_dir, 'Games'),
             home_dir
         ]
         for common_dir in common_dirs:
